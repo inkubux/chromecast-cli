@@ -1,6 +1,6 @@
 {
 	"name": "chromecast-cli",
-	"version": "0.0.1",
+	"version": "0.0.2",
 	"description": "Command line interface for Google Chromecast",
 	"author": "Erk Struwe <estruwe@estruwe.de>",
 	"license": "GPL-3.0",
@@ -24,10 +24,10 @@
 		"esversion": 6
 	},
 	"dependencies": {
-		"async": "^1.5.2",
+		"async": "~1.5.2",
 		"castv2-client": "~1.1.1",
-		"commander": "^2.9.0",
-		"lodash": "^4.6.1"
+		"commander": "~2.9.0",
+		"lodash": "~4.6.1"
 	},
 	"devDependencies": {
 		"jshint": "~2.9.1"

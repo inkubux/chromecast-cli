@@ -25,7 +25,7 @@ var connect = function(host, cb) {
 };
 
 app
-	.version('0.0.1')
+		.version('0.0.2')
 	.option('-H, --host <host>', 'IP address or hostname of Chromecast (required)');
 
 app
