@@ -25,18 +25,19 @@ var connect = function(host, cb) {
 };
 
 app
-		.version('0.0.2')
+		.version('0.0.3')
 	.option('-H, --host <host>', 'IP address or hostname of Chromecast (required)');
 
 app
-	.command('play <src>')
-	.description('Play file at <src>')
+		.command('play <src...>')
+		.description('Play file(s) at <src>')
 	// TODO .option('-r, --repeat-mode <repeat-mode>', 'Set repeat mode (REPEAT_OFF, REPEAT_ONE or REPEAT_ALL)', /^(REPEAT_OFF|REPEAT_ONE|REPEAT_ALL)$/i, 'REPEAT_OFF')
-	.option('-f, --force', 'Force play even if Chromecast is already casting')
+		.option('-i, --no-interrupt', 'Do not interrupt if already casting')
 	.action(function(src, options) {
 		if (!app.host)
 			throw new Error('--host option is required');
 
+		var lastStarted = null;
 		return async.auto({
 			client: function(cb) {
 				return connect(app.host, cb);
@@ -45,22 +46,47 @@ app
 				return r.client.receiver.getStatus(cb);
 			}],
 			receiver: ['client', 'status', function(cb, r) {
-				if (!options.force && lodash.get(r.status, 'applications.0'))
-					return cb(new Error('Already casting. Use --force option to override.'));
+				if (!options.interrupt && lodash.get(r.status, 'applications.0'))
+					return cb(new Error('Already casting. Aborting due to the use of --no-interrupt option.'));
 				return r.client.launch(Receiver, cb);
 			}],
-			media: ['receiver', function(cb, r) {
-				var media = {
-					contentId: src
+			receiverEvents: ['receiver', function(cb, r) {
+				r.receiver.on('close', function() {
+					return cb(new Error('Receiver was closed'));
+				});
+				return cb();
+			}],
+			playlist: ['receiver', 'receiverEvents', function(cb, r) {
+				var play = function(file) {
+					if (!file)
+						return cb();
+
+					var media = {
+						contentId: file
+					};
+
+					console.log('Playing', file);
+					return r.receiver.load(media, {autoplay: true, repeatMode: options.repeatMode}, function(e, r) {
+						if (e)
+							return cb(e);
+					});
 				};
-				r.receiver.load(media, {autoplay: true, repeatMode: options.repeatMode}, cb);
+
+				r.receiver.on('status', function(status) {
+					console.log('Status', status.playerState);
+					switch (status.playerState) {
+						case 'IDLE':
+							return play(src.shift());
+					}
+				});
+
+				return play(src.shift());
 			}]
 		}, function(e, r) {
 			if (e) {
 				console.error(e);
 				return process.exit(1);
 			}
-			console.log(r.media.playerState, r.media.media, r.media.repeatMode);
 			return process.exit();
 		});
 	});
