@@ -3,16 +3,21 @@ Command line interface for Google Chromecast
 
 ## Installation
 ```
-npm install chromecast-cli
+npm install -g chromecast-cli
 ```
 
 ## Usage
 Type the following to get a list of all commands and options:
 ```
-node chromecast-cli.js
+chromecast
 ```
-
 Please note that this tool does not discover Chromecast devices on your network for performance reasons. You have to specify an IP address via the `--host` option. Consider configuring your DHCP server to assign a fixed IP address to your Chromecast devices.
+
+### Examples
+Play a song from a DLNA/UPnP source
+```
+chromecast
+```
 
 ## Features
 * Play multiple files/urls from command line
