@@ -9,7 +9,7 @@
     "node": "^5.12.0",
     "npm": "^3.8.6"
   },
-  "preferGlobal": "true",
+  "preferGlobal": true,
   "bin": {
     "chromecast": "./chromecast-cli.js"
   },
