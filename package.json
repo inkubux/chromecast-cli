@@ -5,10 +5,6 @@
   "author": "Erk Struwe <estruwe@estruwe.de>",
   "license": "GPL-3.0",
   "main": "chromecast-cli.js",
-  "engines": {
-    "node": "^5.12.0",
-    "npm": "^3.8.6"
-  },
   "preferGlobal": true,
   "bin": {
     "chromecast": "./chromecast-cli.js"
@@ -22,17 +18,12 @@
     "url": "https://github.com/erkstruwe/chromecast-cli/issues"
   },
   "scripts": {
-    "test": "jshint chromecast-cli.js",
     "start": "node chromecast-cli.js --help"
   },
   "dependencies": {
     "async": "~2.0.1",
     "castv2-client": "~1.1.2",
     "commander": "~2.9.0",
-    "jshint": "~2.9.3",
     "lodash": "~4.16.2"
-  },
-  "devDependencies": {
-    "jshint": "~2.9.1"
   }
 }
